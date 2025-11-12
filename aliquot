@@ -1,0 +1,125 @@
+//aliquot.c
+//This is a program designed to calculate aliquot sequences
+
+#include <stdio.h>
+#include <stdlib.h>
+
+//We first need to define the maximum supported number: 10^15
+
+#define LIMIT 1000000000000000LL
+
+/*
+*Basically, it is a function to compute the sum of proper divisors of a number (n)
+*Proper divisors are all the positive divisors of n, excluding n itself
+*/
+
+long long sum_of_proper_divisors(long long n)  {
+   long long i, sum = 1; //Since 1 is always a proper divisor for any number (n)
+
+  if (n <= 1) // 0 and 1 have no proper divisors at all
+        return 0;
+
+
+//Now we need a loop to find divisors up yo sqrt(n)
+
+for (i = 2; i * i <= n; i++) {
+
+        if (n % i == 0) {  //i is a divior of n
+          sum += i;        //Add the divisor
+          if(i != n / i)   //Avoid double-counting square roots
+             sum += n / i; //Add the additive divisor}
+
+                }
+        }
+        return sum; //Returns the sum of proper divisors
+
+
+}
+
+int main(void) {
+   long long n, cterm, nterm; //n:starting number of the sequence, cterm: current term>   int max_len, count = 0; //max_len: maximum sequence length, count: current length
+   char mode;    //'f' for full sequence and 'l' for the length  of the sequence
+
+
+
+// Get an input starting number from the user, in order to begin the sequence
+
+        printf("Please, give the number to start the aliquot sequence from: ");
+        if (scanf("%lld", &n) != 1 || n <= 0 || n >= LIMIT) {
+          printf("Error: invalid input. \n");
+        return 1; //Exit with error code, due to invalid input
+
+        }
+
+
+// Get the maximum sequence length
+        printf("Provide the max aliquot length to look for (0 for unlimited): ");
+        if (scanf("%d", &max_len) != 1 || max_len < 0) {
+           printf("Error: invaliud input. \n");
+        return 1;
+
+        }
+
+
+
+
+// Get a print mode from the user ('f' or 'l' )
+
+ printf("Do you want to print the full sequence ('f') or just the length ('l')?>        if (scanf(" %c", &mode) != 1 || (mode != 'f' && mode != 'l')) {
+         printf("Error: invalid input. /n");
+        return 1; // Exit with error code, due to invalid input
+
+        }
+
+        cterm = n; // The first term is the starting number
+
+
+// Loop to compute the aliquot sequence
+        for (int i = 0; max_len == 0 || i < max_len; i++) {
+          count++; // Increase  the sequence length
+
+
+
+        if (cterm > LIMIT) {   //Cheking if the term exceeds the limit
+           printf("Error: number exceeded 10^15. \n");
+           return 1; // Exit with error code
+          }
+
+
+
+// Print the current term if full sequence ('f')  mode is selected
+        if (mode == 'f') {
+          printf("%lld\n", cterm);
+        }
+
+
+
+
+// Compute the next term
+        nterm = sum_of_proper_divisors(cterm);
+
+        if (nterm > LIMIT) {   //Cheking if the  term exceeds thge limit
+           printf("Error: number exceeded 10^15. \n");
+        return 1; // Exit with erorr code
+
+         }
+
+//Stop if the sequence reaches 0 or stabilizes
+        if (nterm == 0 || nterm == cterm) {
+        break; //Stopping the sequence
+
+        }
+
+        cterm = nterm; // Update the current term for the next repetition
+
+    }
+
+
+// Print the length if length-only 'l' mode is selected
+        if (mode == 'l')  {
+            printf("Length of the aliquot sequence: %d\n", count);
+
+
+        }
+        return 0; // Normal exit with code 0
+}
